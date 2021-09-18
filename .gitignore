@@ -1,0 +1,12 @@
+#Ignore py virtual env
+bin/
+include/
+lib/
+lib64/
+.pyvenv.cfg
+share/
+
+#Enviroments
+.env
+.venv
+
