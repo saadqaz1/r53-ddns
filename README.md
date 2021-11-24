@@ -18,6 +18,12 @@ ZID=''
 LOG_PATH='/home/pi/pyawsdns'
 ```
 
+To test: create python virtual env and activate in working dir
+
+`python3 -m venv env`
+`source env/bin/activate`
+
+
 next modify crontab to run job every X time (in this case every 30 minutes)
 
 `crontab -e`
