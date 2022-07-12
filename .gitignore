@@ -1,0 +1,17 @@
+#Ignore py virtual env
+.awsdns*
+bin/
+include/
+lib/
+lib64/
+.pyvenv.cfg
+share/
+
+#Enviroments
+.env
+.venv
+env-py
+ansible-secrets.yml
+update_sg.yml
+#pylog
+pyawsdns.log
