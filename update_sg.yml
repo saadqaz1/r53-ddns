@@ -1,0 +1,55 @@
+---
+ - name:  Update SG for baseline home ip using Ansible and py-aws-dns
+   hosts: localhost
+   connection: local
+   gather_facts: False
+   tags: provisioning
+   vars_files:
+    - ./ansible-secrets.yml
+
+   vars:
+     wait: yes
+     group: webserver
+     count: 1
+     region: "{{ DEFAULT_REGION }}"
+     security_group: "{{ SECURITY_GROUP }}"
+     ansible_python_interpreter: /etc/opt/py-aws-r53-dns/env-py/bin/python3        
+     vpc_id: "{{ VPC_ID }}"
+     aws_key: "{{ AWS_ACCESS_KEY_ID }}"
+     aws_secret: "{{ AWS_SECRET_ACCESS_KEY }}"
+
+   tasks:
+
+     - name: Task # 1 - Create or Update home ip baseline security group
+       local_action: 
+         module: ec2_group
+         name: "{{ security_group }}"
+         description: Security Group for sq-home
+         region: "{{ region }}"
+         aws_access_key: "{{ aws_key }}"
+         aws_secret_key: "{{ aws_secret }}"
+         vpc_id: "{{ vpc_id }}"
+         rules:
+            - proto: tcp
+              from_port: 22
+              to_port: 22
+              cidr_ip: "{{ HOME_IP }}"
+              rule_desc: "SSH INBOUND HOME_IP"
+            - proto: tcp
+              from_port: 80
+              to_port: 80
+              cidr_ip: "{{ HOME_IP }}"
+              rule_desc: "HTTP INBOUND HOME_IP"
+            - proto: tcp
+              from_port: 443
+              to_port: 443
+              cidr_ip: "{{ HOME_IP }}"
+              rule_desc: "HTTPS INBOULD HOME_IP"
+         rules_egress:
+            - proto: all
+              cidr_ip: 0.0.0.0/0
+       register: baseline_sg_output
+
+     - name: Print return information from the previous task
+       ansible.builtin.debug:
+          var: baseline_sg_output
