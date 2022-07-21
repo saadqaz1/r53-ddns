@@ -47,14 +47,16 @@ VPC_ID: <YOUR-ID-HERE>
 SECURITY_GROUP: <YOUR-SG-HERE>
 ```
 7. run ansible-playbook 
+
 `ansible-playbook -e @ansible-secrets.yml update_sg.yml --extra-vars "HOME_IP=9.9.9.9/32"`
 
-6. next modify crontab to run shell script every X time (in this case every 30 minutes)
+6. next modify crontab to run shell script every x amount of times(in this case every 30 minutes)
 
 `crontab -e`
+
 ```
 # m h  dom mon dow   command
 SHELL=/bin/bash
-*/30 * * * * /usr/bin/python3 /home/pi/pyawsdns/awsdns.py
+*/30 * * * * /etc/opt/py-aws-r53-dns/pyawsdns.sh
 ```
 

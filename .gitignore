@@ -12,6 +12,5 @@ share/
 .venv
 env-py
 ansible-secrets.yml
-update_sg.yml
 #pylog
 pyawsdns.log
