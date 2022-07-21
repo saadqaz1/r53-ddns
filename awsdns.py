@@ -36,9 +36,11 @@ def runAnsibleSg():
         print(HOME_IP)
         cmd = ["ansible-playbook", "-e",  f"HOME_IP={HOME_IP}", "update_sg.yml" ]
         print(cmd)
-        subprocess.run(cmd)
+        subout = subprocess.run(cmd, capture_output=True)
+        logger(subout.stdout.decode())
     except requests.exceptions.RequestException as e:
         print(e)
+        logger(e)
 
 def checkIfIPChanged():
     response = client.list_resource_record_sets(
@@ -88,9 +90,11 @@ def main():
     if checkIfIPChanged() == True:
         WIP = getPublicIp()
         updateRecordIP(WIP)
-        logger('Change Detected...Updating IP...')
-    else:
+        logger('Change Detected...Updating R53 IP...')
+        logger('Change Detected...Updating SG IP Baselines...')
         runAnsibleSg()
+    else:
+#        runAnsibleSg()
         logger('There was no change to IP\'s...Exiting...')
         return
 main()

@@ -1,30 +1,55 @@
 # py-aws-r53-dns
-Python script used as CRON job to check WAN IP of raspberry pi and update AWS Route 53 record accordingly.
+This is a Python script used as a ad-hoc DDNS via CRON jobs to check the WAN IP of the host and update an AWS route53 record and vpc security group ip accordingly.
 
-create and clone rep into local dir
-
-`mkdir pyawsdns && cd pyawsdns`
+1. create and clone this repo into your local dir or ~/opt/
 
 `git clone https://github.com/knightfall23/py-aws-r53-dns.git`
 
-create and add .env vars files in dir for domain name, zone id and log path (may need to create blank logfile)
+2. cd into /py-aws-r53-dns
 
->sudo nano .env
+`cd pyawsdns`
 
+3. create and add .env vars files in dir for domain name, zone id, log path and aws creds (may need to create blank logfile)
+
+`sudo nano .env`
 
 ```
-DOMAIN=''
-ZID=''
-LOG_PATH='/home/pi/pyawsdns'
+AWS_ACCESS_KEY_ID='<YOUR-KEY-HERE>'
+AWS_SECRET_ACCESS_KEY='<YOUR-KEY-HERE>'
+DOMAIN='<YOUR-R53-DOMAIN>'
+ZID='<YOUR-R53-ZONE-ID>'
+LOG_PATH='/opt/py-aws-r53-dns'
 ```
 
-To test: create python virtual env and activate in working dir
+4.To test run the script by creating a python virtual enviroment and activate it in the working dir
 
 `python3 -m venv env`
 `source env/bin/activate`
 
+5. install pip dependencies
 
-next modify crontab to run job every X time (in this case every 30 minutes)
+```
+pip3 install boto3
+pip3 install requests
+pip3 install dotenv
+pip3 install wheel
+pip3 install python-dotenv
+pip3 install ansible
+```
+
+6. create ansible-secrets.yml file for ansible 
+
+```
+AWS_ACCESS_KEY_ID: <YOUR-KEY-HERE>
+AWS_SECRET_ACCESS_KEY: <YOUR-KEY-HERE>
+DEFAULT_REGION: <YOUR-REGION-HERE>
+VPC_ID: <YOUR-ID-HERE>
+SECURITY_GROUP: <YOUR-SG-HERE>
+```
+7. run ansible-playbook 
+`ansible-playbook -e @ansible-secrets.yml update_sg.yml --extra-vars "HOME_IP=9.9.9.9/32"`
+
+6. next modify crontab to run shell script every X time (in this case every 30 minutes)
 
 `crontab -e`
 ```
