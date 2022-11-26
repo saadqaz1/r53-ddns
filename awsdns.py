@@ -22,14 +22,13 @@ def logger(message):
 
 def getPublicIp():
     try:
-        WIP = get('https://ifconfig.me').text
-        os.environ["HOME_IP"] = WIP
-        print(os.environ["HOME_IP"])
-        print(WIP)
+        WIP = get('https://ifconfig.me')
+        os.environ["HOME_IP"] = WIP.text
+        print('ifconfig status code: ' + WIP.status_code)
     except requests.exceptions.RequestException as e:
         logger(e)
         print(e)
-    return WIP
+    return WIP.text
 
 def runAnsibleSg():
     try:
@@ -44,20 +43,21 @@ def runAnsibleSg():
         logger(e)
 
 def checkIfIPChanged():
-    response = client.list_resource_record_sets(
+    R53Response = client.list_resource_record_sets(
     HostedZoneId=ZID,
     StartRecordName=DOMAIN,
     StartRecordType='A',
     MaxItems='1'
     )
-    print(response)
-    DOMAINIP = response['ResourceRecordSets'][0]['ResourceRecords'][0]['Value']
+    print('R53Response: ' + R53Response)
+    logger('R53Response: ' + R53Response)
+    DOMAINIP = R53Response['ResourceRecordSets'][0]['ResourceRecords'][0]['Value']
     WANIP = getPublicIp()
     if WANIP == DOMAINIP:
-        logger('SAME IP...')
+        logger('SAME IP...' + DOMAINIP)
         return False
     elif WANIP != DOMAINIP:
-        logger('DIFF IP...')
+        logger('DIFFERENT IP...' + WANIP)
         return True
 
 def updateRecordIP(WANIP):
