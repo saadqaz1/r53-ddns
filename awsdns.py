@@ -27,6 +27,7 @@ def getPublicIp():
         print(os.environ["HOME_IP"])
         print(WIP)
     except requests.exceptions.RequestException as e:
+        logger(e)
         print(e)
     return WIP
 
@@ -53,10 +54,10 @@ def checkIfIPChanged():
     DOMAINIP = response['ResourceRecordSets'][0]['ResourceRecords'][0]['Value']
     WANIP = getPublicIp()
     if WANIP == DOMAINIP:
-        print('SAME IP...')
+        logger('SAME IP...')
         return False
     elif WANIP != DOMAINIP:
-        print('DIFF IP...')
+        logger('DIFF IP...')
         return True
 
 def updateRecordIP(WANIP):
@@ -90,11 +91,11 @@ def main():
     if checkIfIPChanged() == True:
         WIP = getPublicIp()
         updateRecordIP(WIP)
+        logging.info(dt.isoformat() +': NEW WIP IS: '+ WIP)
         logger('Change Detected...Updating R53 IP...')
         logger('Change Detected...Updating SG IP Baselines...')
         runAnsibleSg()
     else:
-#        runAnsibleSg()
         logger('There was no change to IP\'s...Exiting...')
         return
 main()
