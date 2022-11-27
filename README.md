@@ -24,6 +24,7 @@ LOG_PATH='/opt/py-aws-r53-dns'
 4.To test run the script by creating a python virtual enviroment and activate it in the working dir
 
 `python3 -m venv env`
+
 `source env/bin/activate`
 
 5. install pip dependencies
@@ -36,6 +37,8 @@ pip3 install wheel
 pip3 install python-dotenv
 pip3 install ansible
 ```
+or pip install -r req.txt
+``
 
 6. create ansible-secrets.yml file for ansible 
 
@@ -60,3 +63,8 @@ SHELL=/bin/bash
 */30 * * * * /etc/opt/py-aws-r53-dns/pyawsdns.sh
 ```
 
+
+### TODOS
+- dockerize script
+- add retries for wip check
+- 

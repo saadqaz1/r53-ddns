@@ -1,4 +1,4 @@
- #aws dns boto r53 qpitor update
+# aws dns boto r53 qpitor update
 import os, boto3, logging
 import requests
 import sys, subprocess
@@ -49,12 +49,11 @@ def checkIfIPChanged():
     StartRecordType='A',
     MaxItems='1'
     )
-    print('R53Response: ' + str(R53Response))
     logger('R53Response: ' + str(R53Response))
     DOMAINIP = R53Response['ResourceRecordSets'][0]['ResourceRecords'][0]['Value']
     WANIP = getPublicIp()
     if WANIP == DOMAINIP:
-        logger('SAME IP...' + DOMAINIP)
+        logger('SAME IP...')
         return False
     elif WANIP != DOMAINIP:
         logger('DIFFERENT IP...' + WANIP)
