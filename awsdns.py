@@ -24,7 +24,8 @@ def getPublicIp():
     try:
         WIP = get('https://ifconfig.me')
         os.environ["HOME_IP"] = WIP.text
-        print('ifconfig status code: ' + str(WIP.status_code))
+        logger('ifconfig status code: ' + str(WIP.status_code))
+        logger('ifconfig reply: ' + str(WIP.text))
     except requests.exceptions.RequestException as e:
         logger(e)
         print(e)
@@ -49,7 +50,6 @@ def checkIfIPChanged():
     StartRecordType='A',
     MaxItems='1'
     )
-    logger('R53Response: ' + str(R53Response))
     DOMAINIP = R53Response['ResourceRecordSets'][0]['ResourceRecords'][0]['Value']
     WANIP = getPublicIp()
     if WANIP == DOMAINIP:
