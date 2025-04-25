@@ -1,4 +1,3 @@
- #aws dns boto r53 qpitor update
 import os, boto3, logging
 import requests
 from datetime import datetime 
@@ -21,8 +20,8 @@ def logger(message):
 
 def getPublicIp():
     try:
-        WIP = get('https://ifconfig.me').text
-        print(WIP)
+        WIP = get('https://checkip.amazonaws.com')
+        print("Current Public IP: " + WIP.text.strip())
     except requests.exceptions.RequestException as e:
         print(e)
     return WIP
@@ -35,10 +34,9 @@ def checkIfIPChanged():
     StartRecordType='A',
     MaxItems='1'
     )
-    print(response)
     DOMAINIP = response['ResourceRecordSets'][0]['ResourceRecords'][0]['Value']
     WANIP = getPublicIp()
-    if WANIP == DOMAINIP:
+    if WANIP.text.strip() == DOMAINIP.strip():
         print('SAME IP...')
         return False
     elif WANIP != DOMAINIP:
@@ -78,6 +76,6 @@ def main():
         updateRecordIP(WIP)
         logger('Change Detected...Updating IP...')
     else:
-        logger('There was no change to IP\'s...Exiting...')
+        logger('There was no change to IPs...Exiting...')
         return
 main()
