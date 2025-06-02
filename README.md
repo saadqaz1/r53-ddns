@@ -1,49 +1,70 @@
-# py-aws-r53-dns
+# 🛰️ r53-ddns Overview
+r53-ddns is a Python script designed to function as a basic Dynamic DNS (DDNS) client. It checks your public WAN IP and updates an AWS Route 53 CNAME record accordingly. Ideal for dynamic IP environments where static DNS records are not feasible.
 
-## Overview
+This script is typically scheduled via cron and works well on systems like Raspberry Pi or small VPS servers.
 
-Python script used as CRON job to check WAN IP and update a AWS Route 53 DNS record accordingly.
+## Features
+- Detects changes to your public IP address
 
-## Usage
-1. Clone repo into local working directory
+- Automatically updates AWS Route 53 DNS CNAME records
 
-    `git clone https://github.com/saadqaz1/py-aws-r53-dns.git`
+- Logs actions to a specified file
 
-2. Create `.env` file for
-    - AWS keys
-    - R53 domain name and zone id
-    - log path
+- Easy to deploy and configure
 
-    >sudo nano .env
+## 🚀 Usage Instructions
 
+1. Clone the repo
+    ```bash
+    git clone https://github.com/saadqaz1/r53-ddns.git
+    cd r53-ddns
     ```
-    AWS_ACCESS_KEY_ID=
-    AWS_SECRET_ACCESS_KEY=
-    DOMAIN=''
-    ZID=''
+
+2. Configure Environment Variables
+    Create a `.env` file in the root directory with the following structure:
+    ```.env
+    AWS_ACCESS_KEY_ID=your_aws_key
+    AWS_SECRET_ACCESS_KEY=your_aws_secret
+    DOMAIN='your.domain.com'
+    ZID='your_hosted_zone_id'
     LOG_PATH='/home/pi/pyawsdns'
     ```
-3. Create a virtual env
-
-    `python3 -m venv env`
-
-    `source env/bin/activate`
-
-4. Install req.txt
-
-    `pip install -r req.txt`
-
-3. Run `python3 awsdns.py`
-
-## Schedule
-
-1. Modify crontab to run job every X time (in this case every 30 minutes)
-
-    `crontab -e`
-
-    Example CRON:
+    To edit:
+    ```bash
+    nano .env
     ```
-    # m h  dom mon dow   command
-    SHELL=/bin/bash
-    */30 * * * * /usr/bin/python3 /home/pi/pyawsdns/awsdns.py
+3. Set Up Python Environment
     ```
+    python3 -m venv env
+    source env/bin/activate
+    pip install -r req.txt
+    ```
+
+4. Run the script
+    ```
+    python3 awsdns.py
+    ```
+
+## ⏲️ Set Up as a Cron Job
+To run the script every 30 minutes:
+
+```
+crontab -e
+```
+
+Add the following entry:
+```
+# m h  dom mon dow   command
+SHELL=/bin/bash
+*/30 * * * * /usr/bin/python3 /home/pi/pyawsdns/awsdns.py
+```
+Make sure the path matches your script location and Python interpreter.
+
+*TODO: Update with shell script usage
+
+## 📝 Notes
+Requires AWS IAM credentials with permissions to manage Route 53 records.
+
+This script assumes you are updating a CNAME record. Modify it accordingly for A or other record types if needed.
+
+Logs are saved to the specified LOG_PATH directory.
